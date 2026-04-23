@@ -20,6 +20,7 @@ local p = {
   green = "#61ffca",
   yellow = "#ffca85",
   purple = "#a277ff",
+  focus = "#61ffca",
   split = "#3d3a4f",
 }
 
@@ -32,7 +33,7 @@ hi("NormalNC", { fg = p.fg, bg = p.bg })
 hi("NormalFloat", { fg = p.fg, bg = p.bg_alt })
 hi("FloatBorder", { fg = p.split, bg = p.bg_alt })
 hi("FloatTitle", { fg = p.purple, bg = p.bg_alt, bold = true })
-hi("Cursor", { fg = p.bg, bg = p.purple })
+hi("Cursor", { fg = p.bg, bg = p.focus })
 hi("CursorLine", { bg = p.bg_cursorline })
 hi("CursorColumn", { bg = p.bg_cursorline })
 hi("ColorColumn", { bg = p.bg_alt })
@@ -127,11 +128,11 @@ hi("GitSignsAdd", { fg = p.green, bg = p.bg })
 hi("GitSignsChange", { fg = p.yellow, bg = p.bg })
 hi("GitSignsDelete", { fg = p.red, bg = p.bg })
 hi("SnacksIndent", { fg = "#2b2836", nocombine = true })
-hi("SnacksIndentScope", { fg = "#3b3748", nocombine = true })
+hi("SnacksIndentScope", { fg = p.focus, nocombine = true })
 hi("SnacksIndentChunk", { fg = "#353143", nocombine = true })
-hi("MiniIndentscopeSymbol", { fg = "#3b3748", nocombine = true })
+hi("MiniIndentscopeSymbol", { fg = p.focus, nocombine = true })
 hi("IblIndent", { fg = "#2b2836", nocombine = true })
-hi("IblScope", { fg = "#3b3748", nocombine = true })
+hi("IblScope", { fg = p.focus, nocombine = true })
 
 hi("RenderMarkdownCode", { bg = p.bg_code })
 hi("RenderMarkdownCodeInline", { bg = p.bg_code })
