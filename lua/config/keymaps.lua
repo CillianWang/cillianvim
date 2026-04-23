@@ -20,6 +20,10 @@ map("n", "<C-l>", "<C-w>l", { desc = "Go to right split" })
 map("n", "L", "20j", { desc = "Move down 20 lines" })
 map("n", "H", "20k", { desc = "Move up 20 lines" })
 
+-- Buffer navigation
+map("n", "<leader>h", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
+map("n", "<leader>l", "<cmd>bnext<cr>", { desc = "Next buffer" })
+
 -- Terminal workflow
 map("n", "<leader>tv", "<cmd>vsplit | terminal<cr>", { desc = "Terminal in vertical split" })
 map("n", "<leader>th", "<cmd>split | terminal<cr>", { desc = "Terminal in horizontal split" })
