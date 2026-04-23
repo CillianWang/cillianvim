@@ -20,7 +20,7 @@ local p = {
   green = "#61ffca",
   yellow = "#ffca85",
   purple = "#a277ff",
-  focus = "#61ffca",
+  focus = "#ffca85",
   split = "#3d3a4f",
 }
 
