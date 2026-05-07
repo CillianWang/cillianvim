@@ -1,8 +1,73 @@
 return {
   {
-    "LazyVim/LazyVim",
+    "iamcco/markdown-preview.nvim",
+    keys = {
+      { "<leader>mp", "<cmd>MarkdownPreviewToggle<cr>", desc = "Markdown Preview Toggle" },
+    },
+    init = function()
+      vim.g.mkdp_auto_start = 1
+      vim.g.mkdp_auto_close = 1
+    end,
+  },
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
     opts = {
-      colorscheme = "kaku",
+      heading = {
+        -- icons placed before each heading level
+        icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
+        -- fill the entire line with background color
+        width = "full",
+        backgrounds = {
+          "RenderMarkdownH1Bg",
+          "RenderMarkdownH2Bg",
+          "RenderMarkdownH3Bg",
+          "RenderMarkdownH4Bg",
+          "RenderMarkdownH5Bg",
+          "RenderMarkdownH6Bg",
+        },
+        foregrounds = {
+          "RenderMarkdownH1",
+          "RenderMarkdownH2",
+          "RenderMarkdownH3",
+          "RenderMarkdownH4",
+          "RenderMarkdownH5",
+          "RenderMarkdownH6",
+        },
+      },
+    },
+  },
+  {
+    "mfussenegger/nvim-lint",
+    opts = {
+      linters_by_ft = {
+        markdown = {},
+      },
+    },
+  },
+  {
+    "LazyVim/LazyVim",
+    opts = function()
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "markdown",
+        callback = function()
+          vim.diagnostic.enable(false, { bufnr = 0 })
+          vim.opt_local.spell = false
+        end,
+      })
+      return { colorscheme = "kaku" }
+    end,
+  },
+  {
+    "lewis6991/gitsigns.nvim",
+    opts = {
+      current_line_blame = true,
+      current_line_blame_opts = {
+        virt_text = true,
+        virt_text_pos = "eol",
+        delay = 0,
+        ignore_whitespace = false,
+      },
+      current_line_blame_formatter = "  <author>, <author_time:%Y-%m-%d> · <summary>",
     },
   },
   {

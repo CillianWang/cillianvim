@@ -7,6 +7,22 @@
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
+pcall(vim.api.nvim_del_augroup_by_name, "lazyvim_wrap_spell")
+
+local diag_cfg = { virtual_text = false, signs = false, underline = false }
+
+vim.schedule(function()
+  vim.diagnostic.config(diag_cfg)
+end)
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function()
+    vim.schedule(function()
+      vim.diagnostic.config(diag_cfg)
+    end)
+  end,
+})
+
 local augroup = vim.api.nvim_create_augroup("user_startup_explorer", { clear = true })
 
 vim.api.nvim_create_autocmd("User", {
@@ -32,6 +48,55 @@ vim.api.nvim_create_autocmd("User", {
 
         Snacks.explorer.reveal({ cwd = LazyVim.root() })
       end
+    end)
+  end,
+})
+
+local ui_augroup = vim.api.nvim_create_augroup("user_ui_tweaks", { clear = true })
+
+local function hl_resolved(name, fallback)
+  local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = name, link = false })
+  if ok and hl and next(hl) ~= nil then
+    return hl
+  end
+  ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = fallback, link = false })
+  if ok and hl and next(hl) ~= nil then
+    return hl
+  end
+  return {}
+end
+
+local function apply_ui_tweaks()
+  local linernr_fg = vim.api.nvim_get_hl(0, { name = "LineNr", link = false }).fg
+  vim.api.nvim_set_hl(0, "LineNrAbove", { fg = linernr_fg, italic = true })
+  vim.api.nvim_set_hl(0, "LineNrBelow", { fg = linernr_fg, italic = true })
+  vim.api.nvim_set_hl(0, "GitSignsCurrentLineBlame", { link = "Comment" })
+end
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+  group = ui_augroup,
+  callback = function()
+    vim.schedule(function()
+      vim.defer_fn(apply_ui_tweaks, 100)
+    end)
+  end,
+})
+
+vim.api.nvim_create_autocmd("User", {
+  group = ui_augroup,
+  pattern = "VeryLazy",
+  callback = function()
+    vim.schedule(function()
+      vim.defer_fn(apply_ui_tweaks, 100)
+    end)
+  end,
+})
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = ui_augroup,
+  callback = function()
+    vim.schedule(function()
+      vim.defer_fn(apply_ui_tweaks, 100)
     end)
   end,
 })

@@ -7,3 +7,7 @@ vim.opt.guicursor = {
   "i-ci-ve:ver35-Cursor",
   "r-cr-o:hor20-Cursor",
 }
+
+-- Some terminals need explicit escape codes to render italics.
+vim.cmd([[let &t_ZH = "\e[3m"]])
+vim.cmd([[let &t_ZR = "\e[23m"]])
