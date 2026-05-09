@@ -1,5 +1,13 @@
 return {
   {
+    "LudoPinelli/comment-box.nvim",
+    keys = {
+      { "<leader>cb", "<cmd>CBccbox<cr>",  desc = "Comment Box (centered)" },
+      { "<leader>cl", "<cmd>CBccline<cr>", desc = "Comment Line (centered)" },
+      { "<leader>cd", "<cmd>CBd<cr>",      desc = "Comment Box Delete" },
+    },
+  },
+  {
     "iamcco/markdown-preview.nvim",
     keys = {
       { "<leader>mp", "<cmd>MarkdownPreviewToggle<cr>", desc = "Markdown Preview Toggle" },
