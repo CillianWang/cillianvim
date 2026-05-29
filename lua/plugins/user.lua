@@ -1,5 +1,17 @@
 return {
   {
+    "folke/flash.nvim",
+    opts = {
+      -- Homerow-first priority order for jump labels
+      labels = "asdfghjklqwertyuiopzxcvbnm",
+      label = {
+        -- Don't use uppercase labels; when single lowercase labels run out,
+        -- flash falls back to multi-character labels instead.
+        uppercase = false,
+      },
+    },
+  },
+  {
     "LudoPinelli/comment-box.nvim",
     keys = {
       { "<leader>cb", "<cmd>CBccbox<cr>",  desc = "Comment Box (centered)" },
@@ -62,9 +74,12 @@ return {
           vim.opt_local.spell = false
         end,
       })
-      return { colorscheme = "kaku" }
+      return { colorscheme = "vscode" }
     end,
   },
+  -- Hide the tab/buffer line at the top
+  { "akinsho/bufferline.nvim", enabled = false },
+
   {
     "lewis6991/gitsigns.nvim",
     opts = {
@@ -100,6 +115,31 @@ return {
     opts = function(_, opts)
       opts.options = opts.options or {}
       opts.options.disabled_filetypes = { statusline = { "alpha", "ministarter" } }
+
+      -- Add our own trouble breadcrumb. LazyVim's default is disabled via
+      -- vim.g.trouble_lualine = false (set in options.lua) because its
+      -- {kind_icon} segments use a separate highlight group with a bg that
+      -- never matches the surrounding lualine section. Ours uses "> " as
+      -- plain text inline with the symbol name, so it picks up the section bg.
+      local ok, trouble = pcall(require, "trouble")
+      if ok then
+        opts.sections = opts.sections or {}
+        opts.sections.lualine_c = opts.sections.lualine_c or {}
+        local symbols = trouble.statusline({
+          mode = "symbols",
+          groups = {},
+          title = false,
+          filter = { range = true },
+          format = "> {symbol.name}",
+          -- no hl_group → trouble doesn't run fix_statusline; segments use Normal
+        })
+        table.insert(opts.sections.lualine_c, {
+          symbols and symbols.get,
+          cond = function()
+            return vim.b.trouble_lualine ~= false and symbols.has()
+          end,
+        })
+      end
     end,
   },
   {
@@ -163,4 +203,5 @@ return {
       },
     },
   },
+
 }

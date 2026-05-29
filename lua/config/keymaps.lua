@@ -29,5 +29,21 @@ map("n", "<leader>tv", "<cmd>vsplit | terminal<cr>", { desc = "Terminal in verti
 map("n", "<leader>th", "<cmd>split | terminal<cr>", { desc = "Terminal in horizontal split" })
 map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
+-- Floating terminal (override LazyVim/snacks defaults that open a bottom split)
+local function float_term()
+  Snacks.terminal(nil, {
+    win = {
+      position = "float",
+      border = "rounded",
+      height = 0.8,
+      width = 0.8,
+    },
+  })
+end
+map({ "n", "t" }, "<C-/>", float_term, { desc = "Toggle floating terminal" })
+map({ "n", "t" }, "<C-_>", float_term, { desc = "Toggle floating terminal" })
+map("n", "<leader>ft", float_term, { desc = "Floating terminal" })
+map("n", "<leader>fT", float_term, { desc = "Floating terminal" })
+
 -- Quit Neovim entirely
 map("n", "<leader>q", "<cmd>qa<cr>", { desc = "Quit all" })

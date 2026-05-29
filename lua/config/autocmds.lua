@@ -9,6 +9,14 @@
 
 pcall(vim.api.nvim_del_augroup_by_name, "lazyvim_wrap_spell")
 
+-- Force cmdheight=0 even if a plugin sets it back during startup.
+vim.api.nvim_create_autocmd({ "VimEnter", "User" }, {
+  pattern = { "*", "VeryLazy" },
+  callback = function()
+    vim.opt.cmdheight = 0
+  end,
+})
+
 local diag_cfg = { virtual_text = false, signs = false, underline = false }
 
 vim.schedule(function()
@@ -71,6 +79,21 @@ local function apply_ui_tweaks()
   vim.api.nvim_set_hl(0, "LineNrAbove", { fg = linernr_fg, italic = true })
   vim.api.nvim_set_hl(0, "LineNrBelow", { fg = linernr_fg, italic = true })
   vim.api.nvim_set_hl(0, "GitSignsCurrentLineBlame", { link = "Comment" })
+
+  -- Diffview file-history panel shows colored bg blocks behind insertions/
+  -- deletions counters. Strip the bg, keep just colored fg text.
+  local function strip_bg(name, fallback_fg)
+    local hl = vim.api.nvim_get_hl(0, { name = name, link = false })
+    if not hl or vim.tbl_isempty(hl) then
+      hl = { fg = fallback_fg }
+    end
+    hl.bg = "NONE"
+    vim.api.nvim_set_hl(0, name, hl)
+  end
+  strip_bg("DiffviewFilePanelInsertions", "#7cb342")
+  strip_bg("DiffviewFilePanelDeletions", "#e57373")
+  strip_bg("diffAdded", "#7cb342")
+  strip_bg("diffRemoved", "#e57373")
 end
 
 vim.api.nvim_create_autocmd("ColorScheme", {

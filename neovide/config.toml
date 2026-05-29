@@ -1,0 +1,4 @@
+neovim-bin = "/opt/homebrew/bin/nvim"
+frame = "none"
+icon = "/Users/pingy/.config/neovide/icon.png"
+chdir = "/Users/pingy/code"
