@@ -22,6 +22,8 @@ local p = {
   purple = "#a277ff",
   focus = "#ffca85",
   split = "#3d3a4f",
+  indent = "#18171e",
+  indent_scope = "#211f29",
 }
 
 local function hi(group, opts)
@@ -129,12 +131,12 @@ hi("DiffText", { fg = p.purple, bg = p.bg_visual })
 hi("GitSignsAdd", { fg = p.green, bg = p.bg })
 hi("GitSignsChange", { fg = p.yellow, bg = p.bg })
 hi("GitSignsDelete", { fg = p.red, bg = p.bg })
-hi("SnacksIndent", { fg = "#2b2836", nocombine = true })
-hi("SnacksIndentScope", { fg = p.focus, nocombine = true })
-hi("SnacksIndentChunk", { fg = "#353143", nocombine = true })
-hi("MiniIndentscopeSymbol", { fg = p.focus, nocombine = true })
-hi("IblIndent", { fg = "#2b2836", nocombine = true })
-hi("IblScope", { fg = p.focus, nocombine = true })
+hi("SnacksIndent", { fg = p.indent, nocombine = true })
+hi("SnacksIndentScope", { fg = p.indent_scope, nocombine = true })
+hi("SnacksIndentChunk", { fg = p.indent_scope, nocombine = true })
+hi("MiniIndentscopeSymbol", { fg = p.indent_scope, nocombine = true })
+hi("IblIndent", { fg = p.indent, nocombine = true })
+hi("IblScope", { fg = p.indent_scope, nocombine = true })
 
 hi("RenderMarkdownCode", { bg = p.bg_code })
 hi("RenderMarkdownCodeInline", { bg = p.bg_code })

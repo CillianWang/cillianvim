@@ -3,6 +3,10 @@
 -- Add any additional keymaps here
 
 local map = vim.keymap.set
+local keymap_help = require("config.keymap_help")
+
+-- Searchable Markdown help for every active global and buffer-local keymap
+map("n", "<leader>;", keymap_help.open, { desc = "Show all keymaps" })
 
 -- Easier split creation
 map("n", "<leader>sv", "<C-w>v", { desc = "Split window vertically" })

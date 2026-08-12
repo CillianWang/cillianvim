@@ -96,6 +96,20 @@ local function apply_ui_tweaks()
   strip_bg("diffRemoved", "#e57373")
 end
 
+-- Soften the terminal ANSI blue (default/theme blue is too vivid).
+-- terminal_color_4 = normal blue, _12 = bright blue, read by :terminal at
+-- buffer-creation time. Set synchronously (no defer) so it always wins over
+-- the colorscheme, and run once now in case the colorscheme already loaded.
+local function set_terminal_colors()
+  vim.g.terminal_color_4 = "#6f8fb0"
+  vim.g.terminal_color_12 = "#83a3c4"
+end
+vim.api.nvim_create_autocmd("ColorScheme", {
+  group = ui_augroup,
+  callback = set_terminal_colors,
+})
+set_terminal_colors()
+
 vim.api.nvim_create_autocmd("ColorScheme", {
   group = ui_augroup,
   callback = function()

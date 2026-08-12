@@ -21,6 +21,11 @@ return {
   },
   {
     "iamcco/markdown-preview.nvim",
+    -- On Apple Silicon the pre-built binary ships UNSIGNED and macOS SIGKILLs
+    -- it (job fails with "Unknown system error -88"). Build the node app
+    -- instead so it runs via `node app/index.js` (mkdp falls back to node
+    -- when the pre-built binary isn't executable — keep it chmod -x'd).
+    build = "cd app && npm install --no-audit --no-fund",
     keys = {
       { "<leader>mp", "<cmd>MarkdownPreviewToggle<cr>", desc = "Markdown Preview Toggle" },
     },
@@ -31,7 +36,61 @@ return {
   },
   {
     "MeanderingProgrammer/render-markdown.nvim",
+    -- Load before CodeCompanion creates its scratch buffer so the FileType
+    -- event is never missed by render-markdown's attachment autocmd.
+    lazy = false,
     opts = {
+      file_types = { "markdown", "codecompanion" },
+      overrides = {
+        filetype = {
+          codecompanion = {
+            render_modes = true,
+            -- Chat is a reading surface: keep Markdown rendered even when the
+            -- cursor happens to be on a heading, emphasis, or code fence.
+            anti_conceal = { enabled = false },
+            padding = { highlight = "CodeCompanionChatNormal" },
+            heading = {
+              backgrounds = {
+                "CodeCompanionMarkdownHeading",
+                "CodeCompanionMarkdownHeading",
+                "CodeCompanionMarkdownHeading",
+                "CodeCompanionMarkdownHeading",
+                "CodeCompanionMarkdownHeading",
+                "CodeCompanionMarkdownHeading",
+              },
+              foregrounds = {
+                "CodeCompanionMarkdownHeading",
+                "CodeCompanionMarkdownHeading",
+                "CodeCompanionMarkdownHeading",
+                "CodeCompanionMarkdownHeading",
+                "CodeCompanionMarkdownHeading",
+                "CodeCompanionMarkdownHeading",
+              },
+            },
+            code = {
+              -- Render a real, full-width code card: hide the backticks,
+              -- retain the language label, and color every row including its
+              -- top and bottom border.
+              style = "full",
+              width = "full",
+              border = "thick",
+              background_inset = 0,
+              conceal_delimiters = true,
+              language = true,
+              language_icon = true,
+              language_name = true,
+              position = "left",
+              left_pad = 1,
+              right_pad = 1,
+              highlight = "CodeCompanionMarkdownCode",
+              highlight_info = "CodeCompanionMarkdownCodeInfo",
+              highlight_border = "CodeCompanionMarkdownCodeBorder",
+              highlight_fallback = "CodeCompanionMarkdownCodeInfo",
+              highlight_inline = "CodeCompanionMarkdownInlineCode",
+            },
+          },
+        },
+      },
       heading = {
         -- icons placed before each heading level
         icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
@@ -100,6 +159,31 @@ return {
         preset = {
           header = "",
         },
+      },
+      indent = {
+        -- Only draw the scope containing the cursor; hide all other guides.
+        indent = { enabled = false },
+        scope = {
+          enabled = true,
+          char = "┃",
+          only_current = true,
+        },
+        chunk = { enabled = false },
+        config = function()
+          local indent = require("snacks.indent")
+          if indent._kaku_scope_filter_installed then
+            return
+          end
+
+          local render_scope = indent.render_scope
+          indent.render_scope = function(scope, state)
+            if (scope.indent or 0) == 0 or scope:size() > 40 then
+              return
+            end
+            return render_scope(scope, state)
+          end
+          indent._kaku_scope_filter_installed = true
+        end,
       },
     },
   },
