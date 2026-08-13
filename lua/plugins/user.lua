@@ -14,9 +14,9 @@ return {
   {
     "LudoPinelli/comment-box.nvim",
     keys = {
-      { "<leader>cb", "<cmd>CBccbox<cr>", desc = "Comment Box (centered)" },
+      { "<leader>cb", "<cmd>CBccbox<cr>",  desc = "Comment Box (centered)" },
       { "<leader>cl", "<cmd>CBccline<cr>", desc = "Comment Line (centered)" },
-      { "<leader>cd", "<cmd>CBd<cr>", desc = "Comment Box Delete" },
+      { "<leader>cd", "<cmd>CBd<cr>",      desc = "Comment Box Delete" },
     },
   },
   {
@@ -200,23 +200,6 @@ return {
       opts.options = opts.options or {}
       opts.options.disabled_filetypes = { statusline = { "alpha", "ministarter" } }
 
-      -- Replace LazyVim's Top/Bot text with a compact file-reading progress bar.
-      local function file_progress()
-        local current = vim.fn.line(".")
-        local total = vim.fn.line("$")
-        local ratio = total <= 1 and 1 or (current - 1) / (total - 1)
-        local width = 8
-        local filled = math.floor(ratio * width + 0.5)
-        local percent = math.floor(ratio * 100 + 0.5)
-        return string.rep("▰", filled) .. string.rep("▱", width - filled) .. string.format(" %3d%%", percent)
-      end
-
-      opts.sections = opts.sections or {}
-      opts.sections.lualine_y = {
-        { file_progress, separator = " ", padding = { left = 1, right = 0 } },
-        { "location", padding = { left = 0, right = 1 } },
-      }
-
       -- Add our own trouble breadcrumb. LazyVim's default is disabled via
       -- vim.g.trouble_lualine = false (set in options.lua) because its
       -- {kind_icon} segments use a separate highlight group with a bg that
@@ -224,6 +207,7 @@ return {
       -- plain text inline with the symbol name, so it picks up the section bg.
       local ok, trouble = pcall(require, "trouble")
       if ok then
+        opts.sections = opts.sections or {}
         opts.sections.lualine_c = opts.sections.lualine_c or {}
         local symbols = trouble.statusline({
           mode = "symbols",
@@ -303,4 +287,5 @@ return {
       },
     },
   },
+
 }
