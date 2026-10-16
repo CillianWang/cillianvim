@@ -14,6 +14,47 @@ vim.opt.relativenumber = false
 -- so the filler is just a background color instead of striped characters.
 vim.opt.fillchars:append({ diff = " " })
 
+-- Default tabline labels a tab by its *current* window's buffer, so focusing
+-- the CodeCompanion chat float renames the tab to "[CodeCompanion] N". Label
+-- each tab by its first normal (non-floating) window instead.
+local function tab_label(tab)
+  -- Pick the main window of the tab: the largest non-floating one, so side
+  -- panels (e.g. the snacks explorer layout box) don't name the tab.
+  local best, best_area = nil, -1
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tab)) do
+    local cfg = vim.api.nvim_win_get_config(win)
+    if cfg.relative == "" then
+      local area = vim.api.nvim_win_get_width(win) * vim.api.nvim_win_get_height(win)
+      if area > best_area then
+        best, best_area = win, area
+      end
+    end
+  end
+  if best then
+    local buf = vim.api.nvim_win_get_buf(best)
+    local name = vim.fn.bufname(buf)
+    name = name ~= "" and vim.fn.fnamemodify(name, ":t") or "[No Name]"
+    if vim.bo[buf].modified then
+      name = name .. "+"
+    end
+    return name
+  end
+  return "[No Name]"
+end
+
+function _G.user_tabline()
+  local parts = {}
+  local current = vim.api.nvim_get_current_tabpage()
+  for index, tab in ipairs(vim.api.nvim_list_tabpages()) do
+    local hl = tab == current and "%#TabLineSel#" or "%#TabLine#"
+    parts[#parts + 1] = hl .. " " .. index .. ":" .. tab_label(tab) .. " "
+  end
+  parts[#parts + 1] = "%#TabLineFill#%T"
+  return table.concat(parts)
+end
+
+vim.o.tabline = "%!v:lua.user_tabline()"
+
 -- Disable LazyVim's trouble breadcrumb (we add our own clean version in lualine opts)
 vim.g.trouble_lualine = false
 
@@ -51,8 +92,17 @@ if vim.g.neovide then
     vim.env.PATH = table.concat(prefix, ":") .. ":" .. path
   end
 
-  vim.o.guifont = "CascadiaSarasa,Cascadia Code NF:h16"
+  -- IosevkaTerm NFM: Latin + Nerd Font icons. CascadiaSarasa stays in the
+  -- chain because Iosevka has NO CJK glyphs — without a CJK-capable fallback,
+  -- every Chinese character triggers a full system font-database scan, which
+  -- makes scrolling/editing Chinese text stutter badly in Neovide.
+  vim.o.guifont = "IosevkaTerm NFM,CascadiaSarasa:h16"
   vim.opt.linespace = 4
+
+  -- Snappier GUI feel. Defaults (cursor 0.13s, scroll 0.3s) can feel like
+  -- input lag; shorten both. Set either to 0 to disable the animation.
+  vim.g.neovide_cursor_animation_length = 0.05
+  vim.g.neovide_scroll_animation_length = 0.1
 
   -- Window padding (set at runtime via vim globals, not config.toml)
   vim.g.neovide_padding_top = 40

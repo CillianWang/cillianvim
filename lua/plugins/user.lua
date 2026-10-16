@@ -133,7 +133,7 @@ return {
           vim.opt_local.spell = false
         end,
       })
-      return { colorscheme = "vscode" }
+      return { colorscheme = "vague" }
     end,
   },
   -- Hide the tab/buffer line at the top
@@ -199,6 +199,26 @@ return {
     opts = function(_, opts)
       opts.options = opts.options or {}
       opts.options.disabled_filetypes = { statusline = { "alpha", "ministarter" } }
+
+      -- The CodeCompanion chat float is named "[CodeCompanion] N"; with
+      -- globalstatus the statusline would show that title whenever the chat
+      -- is focused. Hide the buffer-title components inside the chat window.
+      opts.sections = opts.sections or {}
+      opts.sections.lualine_c = opts.sections.lualine_c or {}
+      for i, comp in ipairs(opts.sections.lualine_c) do
+        local cond = type(comp) == "table" and comp.cond or nil
+        local function not_in_chat()
+          if vim.bo.filetype == "codecompanion" then
+            return false
+          end
+          return cond == nil or cond()
+        end
+        if type(comp) == "table" then
+          comp.cond = not_in_chat
+        elseif type(comp) == "function" then
+          opts.sections.lualine_c[i] = { comp, cond = not_in_chat }
+        end
+      end
 
       -- Add our own trouble breadcrumb. LazyVim's default is disabled via
       -- vim.g.trouble_lualine = false (set in options.lua) because its

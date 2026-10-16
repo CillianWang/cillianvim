@@ -1,5 +1,5 @@
 -- Native Codex chat in a right-side floating window.
--- Visual <leader>cs opens a new chat with the selection as context.
+-- Visual <leader>cc opens Codex with the selection as context.
 
 local MODEL = "gpt-5.6-luna"
 local CODEX_ACP = "@agentclientprotocol/codex-acp@1.1.14"
@@ -207,6 +207,11 @@ local function apply_chat_window(bufnr)
     if vim.api.nvim_win_is_valid(win) then
       vim.wo[win].winhighlight = CHAT_WINHIGHLIGHT
       vim.wo[win].winblend = 0
+      vim.wo[win].number = false
+      vim.wo[win].relativenumber = false
+      vim.wo[win].signcolumn = "no"
+      vim.wo[win].foldcolumn = "0"
+      vim.wo[win].statuscolumn = ""
     end
   end
 end
@@ -329,6 +334,11 @@ local function chat_window()
       breakindent = true,
       linebreak = true,
       wrap = true,
+      number = false,
+      relativenumber = false,
+      signcolumn = "no",
+      foldcolumn = "0",
+      statuscolumn = "",
       winhighlight = CHAT_WINHIGHLIGHT,
     },
   }
@@ -662,6 +672,12 @@ return {
       toggle_chat,
       desc = "Toggle Codex chat",
       mode = "n",
+    },
+    {
+      "<leader>cc",
+      chat_about_selection,
+      desc = "Open Codex with selected code",
+      mode = "x",
     },
     {
       "<leader>cs",

@@ -67,22 +67,22 @@ Leader key in LazyVim is `Space`.
 
 ## Git For Other Devices
 
-Right now this directory is a git clone of the LazyVim starter. To make it your own:
+The config is synced to [CillianWang/cillianvim](https://github.com/CillianWang/cillianvim)
+on the `main` branch.
+
+To download config updates when your working tree is clean:
 
 ```bash
 cd ~/.config/nvim
-git remote rename origin upstream
-git remote add origin git@github.com:YOUR_NAME/nvim-config.git
-git add .
-git commit -m "My Neovim setup"
-git push -u origin main
+git pull --ff-only
 ```
 
-On another device:
+On another device, clone into an empty config location:
 
 ```bash
-git clone git@github.com:YOUR_NAME/nvim-config.git ~/.config/nvim
+git clone https://github.com/CillianWang/cillianvim.git ~/.config/nvim
 nvim
 ```
 
-The first launch will install plugins automatically.
+The first launch will install plugins automatically. Run `:Lazy restore` to
+match the plugin versions recorded in `lazy-lock.json`.

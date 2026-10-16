@@ -14,6 +14,11 @@
 --   material, material-deep-ocean -- Material Deep Ocean (Zed-ish)
 --   nord                         -- Nord
 --   gruvbox-material             -- Modern Gruvbox
+--   vague                        -- Vague (cool near-black, low contrast)
+--   kanso, kanso-ink             -- Kanso (near-black ink variant, minimal mode on)
+--   melange                      -- Melange (warm gray-black, tonal)
+--   poimandres                   -- Poimandres (deep blue-black, minimal)
+--   zenbones                     -- Zenbones (ultra low-contrast "zen")
 
 return {
   -- VSCode Dark+ (Cursor uses the same theme out of the box)
@@ -28,6 +33,39 @@ return {
       color_overrides = {
         -- dim the default foreground (was #D4D4D4) so plain text is softer
         vscFront = "#B0B0B0",
+
+        -- Keep the Dark+ hue and lightness, but reduce saturation by about 22%.
+        -- This softens syntax, diagnostics, Git signs, and terminal ANSI colors
+        -- without flattening the contrast between highlight groups.
+        vscViolet = "#696B90",
+        vscBlue = "#649BC8",
+        vscAccentBlue = "#62BBEC",
+        vscMediumBlue = "#319DE5",
+        vscDisabledBlue = "#799BAC",
+        vscLightBlue = "#A7D9F3",
+        vscGreen = "#6D925C",
+        vscBlueGreen = "#5CBBA8",
+        vscLightGreen = "#B6CAAC",
+        vscRed = "#E15A5A",
+        vscOrange = "#C59581",
+        vscLightRed = "#C67474",
+        vscYellowOrange = "#CDB687",
+        vscYellow = "#D6D6AF",
+        vscDarkYellow = "#E3C31E",
+        vscPink = "#BE8DBA",
+
+        vscGitAdded = "#87B28F",
+        vscGitModified = "#D9BE96",
+        vscGitDeleted = "#B75949",
+        vscGitRenamed = "#7CC094",
+        vscGitUntracked = "#7CC094",
+        vscGitStageModified = "#D9BE96",
+        vscGitStageDeleted = "#B75949",
+        vscGitConflicting = "#D67578",
+        vscGitSubmodule = "#96B9D9",
+
+        vscUiBlue = "#144465",
+        vscUiOrange = "#DB8B3C",
       },
       group_overrides = {
         -- Faint, low-saturation diff backgrounds (no diagonal slashes — see
@@ -73,6 +111,15 @@ return {
     "rebelot/kanagawa.nvim",
     lazy = true,
     priority = 1000,
+    opts = {
+      overrides = function(colors)
+        return {
+          -- Default LineNr (#54546D) is nearly invisible on the wave bg
+          -- (#1F1F28); brighten it to the theme's comment gray.
+          LineNr = { fg = colors.palette.fujiGray },
+        }
+      end,
+    },
   },
 
   -- Tokyo Night
@@ -131,5 +178,42 @@ return {
       vim.g.gruvbox_material_background = "medium"
       vim.g.gruvbox_material_better_performance = 1
     end,
+  },
+
+  -- Vague — cool near-black (#141415), low contrast, pastel accents
+  {
+    "vague-theme/vague.nvim",
+    lazy = true,
+    priority = 1000,
+  },
+
+  -- Kanso — near-black "ink" variant; minimal mode keeps the palette tight
+  {
+    "webhooked/kanso.nvim",
+    lazy = true,
+    priority = 1000,
+    opts = { minimal = true },
+  },
+
+  -- Melange — warm gray-black, control flow warm / data cold, very consistent
+  {
+    "savq/melange-nvim",
+    lazy = true,
+    priority = 1000,
+  },
+
+  -- Poimandres — deep blue-black, small disciplined palette
+  {
+    "olivercederborg/poimandres.nvim",
+    lazy = true,
+    priority = 1000,
+  },
+
+  -- Zenbones — ultra low-contrast "zen" family (needs lush.nvim)
+  {
+    "zenbones-theme/zenbones.nvim",
+    dependencies = { "rktjmp/lush.nvim" },
+    lazy = true,
+    priority = 1000,
   },
 }
